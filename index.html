@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANASS Attendance Register</title>
+    <title>2V/A 1 Attendance Register</title>
     <style>
         :root {
             --primary: #6A0DAD;
@@ -35,11 +35,11 @@
         }
         header p {
             margin: 5px 0 0 0;
-            font-size: 0.9rem;
-            opacity: 0.85;
+            font-size: 0.95rem;
+            opacity: 0.9;
         }
         .container {
-            max-width: 800px;
+            max-width: 850px;
             margin: 20px auto;
             padding: 15px;
         }
@@ -49,6 +49,14 @@
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             margin-bottom: 20px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
         }
         .form-group {
             margin-bottom: 15px;
@@ -67,6 +75,22 @@
             font-size: 1rem;
             box-sizing: border-box;
         }
+        .add-student-box {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn-add {
+            background-color: var(--success);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-add:hover { opacity: 0.9; }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -100,6 +124,17 @@
         .btn-late { background-color: var(--warning); color: #333; }
         .btn-status.inactive { opacity: 0.3; }
         
+        .btn-remove {
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .btn-remove:hover { opacity: 0.9; }
+
         .btn-submit {
             background-color: var(--primary);
             color: var(--white);
@@ -111,6 +146,7 @@
             border-radius: 6px;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(106, 13, 173, 0.2);
+            margin-top: 15px;
         }
         .btn-submit:hover {
             background-color: var(--primary-dark);
@@ -128,62 +164,50 @@
 
     <header>
         <h1>Assin Nsuta Senior High School</h1>
-        <p>ICT Department • Mobile Attendance Register</p>
+        <p>Class Attendance Register • <strong>2V/A 1</strong></p>
     </header>
 
     <div class="container">
+        <!-- Control Card -->
         <div class="card">
-            <div class="form-group">
-                <label for="attDate">Select Date:</label>
-                <input type="date" id="attDate">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="weekInput">Week (e.g., Week 1, Week 3):</label>
+                    <input type="text" id="weekInput" value="Week 1" placeholder="Enter week number">
+                </div>
+                <div class="form-group">
+                    <label for="attDate">Date:</label>
+                    <input type="date" id="attDate">
+                </div>
             </div>
-            <div class="form-group">
-                <label for="classSelect">Class / Form:</label>
-                <select id="classSelect">
-                    <option value="Form 1 ICT">Form 1 ICT</option>
-                    <option value="Form 2 ICT">Form 2 ICT</option>
-                    <option value="Form 3 ICT">Form 3 ICT</option>
-                </select>
+
+            <!-- Add Student Section -->
+            <div class="form-group" style="margin-bottom: 0;">
+                <label>Manage Roster:</label>
+                <div class="add-student-box">
+                    <input type="text" id="newStudentName" placeholder="Enter new student full name (Surname First)">
+                    <button type="button" class="btn-add" onclick="addStudent()">+ Add Student</button>
+                </div>
             </div>
         </div>
 
+        <!-- Roster Table Card -->
         <div class="card">
-            <h3>Student Roster</h3>
+            <h3>Student Roster (Class: 2V/A 1)</h3>
             <table id="studentTable">
                 <thead>
                     <tr>
-                        <th>Adm No</th>
+                        <th>#</th>
                         <th>Student Name</th>
-                        <th>Attendance Status</th>
+                        <th>Status (P / A / L)</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody id="rosterBody">
-                    <!-- Sample Students (Can be loaded dynamically or pre-filled) -->
-                    <tr>
-                        <td>ADM001</td>
-                        <td>Adomako Kofi</td>
-                        <td>
-                            <div class="status-buttons">
-                                <button type="button" class="btn-status btn-present" onclick="setStatus(this, 'Present')">P</button>
-                                <button type="button" class="btn-status btn-absent inactive" onclick="setStatus(this, 'Absent')">A</button>
-                                <button type="button" class="btn-status btn-late inactive" onclick="setStatus(this, 'Late')">L</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>ADM002</td>
-                        <td>Mensah Ama Serwaa</td>
-                        <td>
-                            <div class="status-buttons">
-                                <button type="button" class="btn-status btn-present" onclick="setStatus(this, 'Present')">P</button>
-                                <button type="button" class="btn-status btn-absent inactive" onclick="setStatus(this, 'Absent')">A</button>
-                                <button type="button" class="btn-status btn-late inactive" onclick="setStatus(this, 'Late')">L</button>
-                            </div>
-                        </td>
-                    </tr>
+                    <!-- Dynamically populated roster -->
                 </tbody>
             </table>
-            <br>
+            
             <button type="button" class="btn-submit" onclick="syncAttendance()">Sync Attendance to Google Sheet</button>
             <div id="loading">Syncing records to Google Sheet... Please wait.</div>
         </div>
@@ -193,6 +217,37 @@
         // Set today's date by default
         document.getElementById('attDate').valueAsDate = new Date();
 
+        // Initial students specified
+        let students = [
+            "Osei Prince",
+            "Martha Esi",
+            "Manu Justice"
+        ];
+
+        function renderRoster() {
+            const tbody = document.getElementById('rosterBody');
+            tbody.innerHTML = '';
+            
+            students.forEach((name, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><strong>${name}</strong></td>
+                    <td>
+                        <div class="status-buttons">
+                            <button type="button" class="btn-status btn-present" data-status="Present" onclick="setStatus(this, 'Present')">P</button>
+                            <button type="button" class="btn-status btn-absent inactive" data-status="Absent" onclick="setStatus(this, 'Absent')">A</button>
+                            <button type="button" class="btn-status btn-late inactive" data-status="Late" onclick="setStatus(this, 'Late')">L</button>
+                        </div>
+                    </td>
+                    <td>
+                        <button type="button" class="btn-remove" onclick="removeStudent(${index})">Remove</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
         function setStatus(button, status) {
             const parent = button.parentElement;
             const buttons = parent.querySelectorAll('.btn-status');
@@ -201,28 +256,48 @@
             button.dataset.status = status;
         }
 
-        // Initialize default status dataset attribute
-        document.querySelectorAll('.btn-present').forEach(btn => btn.dataset.status = 'Present');
+        function addStudent() {
+            const input = document.getElementById('newStudentName');
+            const name = input.value.trim();
+            if (!name) {
+                alert('Please enter a student name.');
+                return;
+            }
+            students.push(name);
+            input.value = '';
+            renderRoster();
+        }
+
+        function removeStudent(index) {
+            if (confirm(`Are you sure you want to remove ${students[index]} from the register?`)) {
+                students.splice(index, 1);
+                renderRoster();
+            }
+        }
+
+        // Initial render on page load
+        renderRoster();
 
         function syncAttendance() {
+            const week = document.getElementById('weekInput').value;
             const date = document.getElementById('attDate').value;
+            const className = "2V/A 1";
             const rows = document.querySelectorAll('#rosterBody tr');
             const records = [];
 
             rows.forEach(row => {
-                const admNo = row.cells[0].innerText;
                 const name = row.cells[1].innerText;
                 const activeBtn = row.querySelector('.btn-status:not(.inactive)');
-                const status = activeBtn ? activeBtn.innerText : 'Present';
-                records.push({ admNo, name, status });
+                const status = activeBtn ? activeBtn.dataset.status : 'Present';
+                records.push({ name, status });
             });
 
-            const payload = { date, records };
+            const payload = { className, week, date, records };
             const loadingDiv = document.getElementById('loading');
             loadingDiv.style.display = 'block';
 
             // REPLACE WITH YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
-            const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxAJ7YTp8l44TWD9V1zIh1dTzyHYrbH_5UhhyHFXqOf1tW3asVL9VLHNLKrh7skr0xJ/exec';
+            const WEB_APP_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
 
             fetch(WEB_APP_URL, {
                 method: 'POST',
@@ -231,7 +306,7 @@
                 body: JSON.stringify(payload)
             }).then(() => {
                 loadingDiv.style.display = 'none';
-                alert('Attendance successfully recorded and synced to your Google Sheet!');
+                alert('Attendance for Class 2V/A 1 successfully recorded and synced to your Google Sheet!');
             }).catch(error => {
                 loadingDiv.style.display = 'none';
                 alert('Error syncing attendance: ' + error);
