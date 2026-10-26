@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANASS Attendance Register</title>
+    <style>
+        :root {
+            --primary: #6A0DAD;
+            --primary-dark: #4B0082;
+            --accent: #FFD700;
+            --bg: #F8F9FA;
+            --white: #FFFFFF;
+            --success: #28A745;
+            --danger: #DC3545;
+            --warning: #FFC107;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        header p {
+            margin: 5px 0 0 0;
+            font-size: 0.9rem;
+            opacity: 0.85;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 15px;
+        }
+        .card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary-dark);
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        .status-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .btn-status {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+        .btn-present { background-color: var(--success); }
+        .btn-absent { background-color: var(--danger); }
+        .btn-late { background-color: var(--warning); color: #333; }
+        .btn-status.inactive { opacity: 0.3; }
+        
+        .btn-submit {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            width: 100%;
+            padding: 14px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(106, 13, 173, 0.2);
+        }
+        .btn-submit:hover {
+            background-color: var(--primary-dark);
+        }
+        #loading {
+            display: none;
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary);
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Assin Nsuta Senior High School</h1>
+        <p>ICT Department • Mobile Attendance Register</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <div class="form-group">
+                <label for="attDate">Select Date:</label>
+                <input type="date" id="attDate">
+            </div>
+            <div class="form-group">
+                <label for="classSelect">Class / Form:</label>
+                <select id="classSelect">
+                    <option value="Form 1 ICT">Form 1 ICT</option>
+                    <option value="Form 2 ICT">Form 2 ICT</option>
+                    <option value="Form 3 ICT">Form 3 ICT</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Student Roster</h3>
+            <table id="studentTable">
+                <thead>
+                    <tr>
+                        <th>Adm No</th>
+                        <th>Student Name</th>
+                        <th>Attendance Status</th>
+                    </tr>
+                </thead>
+                <tbody id="rosterBody">
+                    <!-- Sample Students (Can be loaded dynamically or pre-filled) -->
+                    <tr>
+                        <td>ADM001</td>
+                        <td>Adomako Kofi</td>
+                        <td>
+                            <div class="status-buttons">
+                                <button type="button" class="btn-status btn-present" onclick="setStatus(this, 'Present')">P</button>
+                                <button type="button" class="btn-status btn-absent inactive" onclick="setStatus(this, 'Absent')">A</button>
+                                <button type="button" class="btn-status btn-late inactive" onclick="setStatus(this, 'Late')">L</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ADM002</td>
+                        <td>Mensah Ama Serwaa</td>
+                        <td>
+                            <div class="status-buttons">
+                                <button type="button" class="btn-status btn-present" onclick="setStatus(this, 'Present')">P</button>
+                                <button type="button" class="btn-status btn-absent inactive" onclick="setStatus(this, 'Absent')">A</button>
+                                <button type="button" class="btn-status btn-late inactive" onclick="setStatus(this, 'Late')">L</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+            <button type="button" class="btn-submit" onclick="syncAttendance()">Sync Attendance to Google Sheet</button>
+            <div id="loading">Syncing records to Google Sheet... Please wait.</div>
+        </div>
+    </div>
+
+    <script>
+        // Set today's date by default
+        document.getElementById('attDate').valueAsDate = new Date();
+
+        function setStatus(button, status) {
+            const parent = button.parentElement;
+            const buttons = parent.querySelectorAll('.btn-status');
+            buttons.forEach(btn => btn.classList.add('inactive'));
+            button.classList.remove('inactive');
+            button.dataset.status = status;
+        }
+
+        // Initialize default status dataset attribute
+        document.querySelectorAll('.btn-present').forEach(btn => btn.dataset.status = 'Present');
+
+        function syncAttendance() {
+            const date = document.getElementById('attDate').value;
+            const rows = document.querySelectorAll('#rosterBody tr');
+            const records = [];
+
+            rows.forEach(row => {
+                const admNo = row.cells[0].innerText;
+                const name = row.cells[1].innerText;
+                const activeBtn = row.querySelector('.btn-status:not(.inactive)');
+                const status = activeBtn ? activeBtn.innerText : 'Present';
+                records.push({ admNo, name, status });
+            });
+
+            const payload = { date, records };
+            const loadingDiv = document.getElementById('loading');
+            loadingDiv.style.display = 'block';
+
+            // REPLACE WITH YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
+            const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxAJ7YTp8l44TWD9V1zIh1dTzyHYrbH_5UhhyHFXqOf1tW3asVL9VLHNLKrh7skr0xJ/exec';
+
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                loadingDiv.style.display = 'none';
+                alert('Attendance successfully recorded and synced to your Google Sheet!');
+            }).catch(error => {
+                loadingDiv.style.display = 'none';
+                alert('Error syncing attendance: ' + error);
+            });
+        }
+    </script>
+</body>
+</html>
