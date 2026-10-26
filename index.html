@@ -78,7 +78,7 @@
         .add-student-box {
             display: flex;
             gap: 10px;
-            margin-top: 15px;
+            margin-top: 5px;
         }
         .btn-add {
             background-color: var(--success);
@@ -185,7 +185,7 @@
             <div class="form-group" style="margin-bottom: 0;">
                 <label>Manage Roster:</label>
                 <div class="add-student-box">
-                    <input type="text" id="newStudentName" placeholder="Enter new student full name (Surname First)">
+                    <input type="text" id="newStudentName" placeholder="Enter student full name (Surname First)">
                     <button type="button" class="btn-add" onclick="addStudent()">+ Add Student</button>
                 </div>
             </div>
@@ -199,7 +199,7 @@
                     <tr>
                         <th>#</th>
                         <th>Student Name</th>
-                        <th>Status (P / A / L)</th>
+                        <th>Attendance Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -209,7 +209,7 @@
             </table>
             
             <button type="button" class="btn-submit" onclick="syncAttendance()">Sync Attendance to Google Sheet</button>
-            <div id="loading">Syncing records to Google Sheet... Please wait.</div>
+            <div id="loading">Syncing records against student names... Please wait.</div>
         </div>
     </div>
 
@@ -219,9 +219,9 @@
 
         // Initial students specified
         let students = [
-            "Osei Prince",
-            "Martha Esi",
-            "Manu Justice"
+            "Prince Osei",
+            "Esi Martha",
+            "Justice Manu"
         ];
 
         function renderRoster() {
@@ -281,7 +281,6 @@
         function syncAttendance() {
             const week = document.getElementById('weekInput').value;
             const date = document.getElementById('attDate').value;
-            const className = "2V/A 1";
             const rows = document.querySelectorAll('#rosterBody tr');
             const records = [];
 
@@ -292,7 +291,7 @@
                 records.push({ name, status });
             });
 
-            const payload = { className, week, date, records };
+            const payload = { week, date, records };
             const loadingDiv = document.getElementById('loading');
             loadingDiv.style.display = 'block';
 
@@ -306,7 +305,7 @@
                 body: JSON.stringify(payload)
             }).then(() => {
                 loadingDiv.style.display = 'none';
-                alert('Attendance for Class 2V/A 1 successfully recorded and synced to your Google Sheet!');
+                alert('Attendance successfully recorded against each student name in your Google Sheet!');
             }).catch(error => {
                 loadingDiv.style.display = 'none';
                 alert('Error syncing attendance: ' + error);
