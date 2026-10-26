@@ -217,11 +217,71 @@
         // Set today's date by default
         document.getElementById('attDate').valueAsDate = new Date();
 
-        // Initial students specified
+        // Pre-loaded student roster from your Google Sheet
         let students = [
-            "Prince Osei",
-            "Esi Martha",
-            "Justice Manu"
+            "ABDULRAHMAN RUKAYA",
+            "ACQUAH ABIGAIL",
+            "ADANA GRACE",
+            "AFRANE ELIZABETH A.",
+            "AKYE HARRIET",
+            "AMEDI VIVIAN AKORFA",
+            "ARTHUR DIANA",
+            "ARTHUR GRACE",
+            "ARTHUR PRISCILLA",
+            "ARTHUR SELINA BASSAW",
+            "ARTHUR VERONICA",
+            "AWOTWE GRACE",
+            "BAIDOO NANCY",
+            "BINNEY THERESA",
+            "BOATENG CYNTHIA",
+            "BUADU CINDY OBENG",
+            "COBBINAH PRINCILLA",
+            "COBBINEAH PRINELLA",
+            "COBOHINAH BLESSING ADWOA",
+            "DADZIE MARY",
+            "DEBORAH RICHEAL",
+            "ESHUN RITA",
+            "ESSILFIE COMFORT",
+            "ESSUMAN QUEEN VICTORIA",
+            "ETHEL AVULETEH",
+            "EWUSI COMFORT",
+            "EYIAH LAWRENCIA",
+            "FRIMPONG ESTHER ANANE",
+            "FRIMPONG OWUSU FOFIE",
+            "GIFTY OGYAE",
+            "JOANITHA ASIRIFI",
+            "KOBBINA HELINA",
+            "KYERENTEMAA ASAMAH BERNICE",
+            "LOIS KUMAH",
+            "MANTEBEA CHRISTABEL",
+            "MARGARET ABLANATSI",
+            "MENSAH JULIANA",
+            "MENSAH PATIENCE",
+            "MENSAH PATRICIA",
+            "MENSAH PAULINA",
+            "NORVINYO BETTY SEFAKOR",
+            "NYARKO EMELIA",
+            "NYARKOH SANDRA OFORI",
+            "OBENEWAA FRANCISCA",
+            "OBOUFI FREDRICA",
+            "OFORI EDWINA",
+            "OFORI HENRIETTA",
+            "OKYERE ANGELINA",
+            "OKYERE ELIZABETH",
+            "OWUSU LILIAN",
+            "PRAH ANITA",
+            "PRAH HANNAH",
+            "PRINCESS NYARIELOH",
+            "QUANI VERONICA",
+            "QUARCOO SANDRA",
+            "RITA KOOMSON",
+            "SAMIRA AKODOGO",
+            "TAWIAH REBECCA",
+            "TAYLOR STEPHANIE",
+            "TORTMATE WILSON OTREWURA",
+            "TUUMASI MONICA",
+            "YEBOAH FRANCISCA",
+            "ZARATU SULE"
         ];
 
         function renderRoster() {
@@ -258,7 +318,7 @@
 
         function addStudent() {
             const input = document.getElementById('newStudentName');
-            const name = input.value.trim();
+            const name = input.value.trim().toUpperCase();
             if (!name) {
                 alert('Please enter a student name.');
                 return;
